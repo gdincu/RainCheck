@@ -1,29 +1,42 @@
-# RainCheck — Will it rain? (PWA, no API key)
+# RainCheck
 
-Clean installable PWA that replaces your 3-tab cmd script with one view:
+A small installable weather app that answers one question: **will it rain?**
 
-| Your old tab | Replacement in app | Free data, no key |
-|---|---|---|
-| Ventusky EURAD radar (next ~1h, 10-min steps) | Radar card: RainViewer tiles + play/scrub | `api.rainviewer.com` (EUMETNET OPERA composites ≈ EURAD) |
-| Ventusky Aladin 1h precipitation (next 8h rain + clouds) | 8-hour cards: rain mm, probability, total/low/mid/high cloud, model picker incl. **CHMI ALADIN 2km** | `api.open-meteo.com` hourly + `models=chmi_aladin_seamless,icon_eu,ecmwf_ifs,gfs` |
-| AccuWeather MinuteCast (next 2h) | Minutecast card: 8× 15-min bars + “Rain in ~X min” verdict | `api.open-meteo.com` `minutely_15` precipitation (opt-in true AccuWeather if you paste a free key, 50 calls/day) |
+Open it on your phone, glance at the top card, and you know whether to take an umbrella.
 
-## Run
+## What you see
 
-Any static server (service worker needs http, not file://):
+- **Verdict at the top** — `NO rain`, `Rain in ~X min`, or `YES — raining`, with current temperature and cloud cover.
+- **Next 2 hours** — 8 bars in 15-minute steps showing expected rain in mm, plus the 2-hour total.
+- **Radar, last ~60 minutes** — live rain radar map around your location. Drag the slider to scrub, press Play to animate. Blue → red means light → heavy rain.
+- **Next 8 hours** — hourly cards with rain amount, rain probability, temperature, total cloud cover, and low / mid / high cloud split. You can switch the forecast model (Best match, ALADIN, ICON-EU, ECMWF, GFS).
+
+Location defaults to Craiova (44.33, 23.80). Change lat/lon manually or tap 📍 to use your phone's location. Your choice is saved on the device.
+
+## How it works
+
+No accounts, no API keys. All data comes from free, open sources straight in the browser:
+
+- **Forecasts (2h + 8h):** [Open-Meteo](https://open-meteo.com/) — combines models like ICON, GFS, ECMWF and CHMI ALADIN. The app asks for `minutely_15` precipitation for the short-term view and `hourly` rain + cloud layers for the 8-hour view.
+- **Radar:** [RainViewer](https://www.rainviewer.com/api.html) — real radar composites (EUMETNET OPERA network), shown as animated map tiles.
+
+Forecasts refresh automatically every 10 minutes. The app shell works offline once installed; forecast and radar need internet.
+
+## Install on your phone
+
+RainCheck is a PWA — it installs like a native app from the browser:
+
+- **Android (Chrome):** open the app URL → menu ⋮ → *Add to Home screen* / *Install app*.
+- **iPhone (Safari):** open the app URL → Share → *Add to Home Screen*.
+
+Icons are provided in all sizes phones need: 180px (iOS), 192px, 512px, and a maskable 512px icon for Android adaptive icons.
+
+## Run it yourself
+
+Any static server works (service worker needs `http`, not `file://`):
 
 ```powershell
-cd E:\repos\RainCheck
 npx serve .
-# or
-python -m http.server 8000
 ```
 
-Open http://localhost:3000 (or :8000) → Add to Home Screen for PWA.
-
-## Notes
-
-- Default location 44.33, 23.80 (Craiova). Editable + 📍 geolocation, saved in localStorage.
-- Ventusky has no public API — we use the same underlying open data (ALADIN via Open-Meteo, radar via OPERA/RainViewer) instead of scraping.
-- AccuWeather MinuteCast API is key-only (`dataservice.accuweather.com/forecasts/v1/minute?q=lat,lon&apikey=KEY`); the app works without it and shows the official phrase if you add a key.
-- Offline: app shell cached by `sw.js`; forecast/radar need network.
+Then open the shown URL, e.g. http://localhost:3000.
