@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>RainCheck — Will it rain in Craiova?</title>
+  <meta name="description" content="Clean PWA: will it rain? 2h minutecast, 60-min radar, 8h rain & cloud. No API key needed." />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/icon.svg" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="./icons/icon.svg" alt="" width="32" height="32" />
+      <div>
+        <h1>RainCheck</h1>
+      </div>
+    </div>
+    <button id="installBtn" class="ghost" hidden>Install</button>
+  </header>
+
+  <main>
+    <section class="card hero" id="hero">
+      <div class="hero-left">
+        <div id="verdict" class="verdict loading">Checking…</div>
+        <div id="verdictSub" class="verdict-sub">Loading forecast…</div>
+        <div class="meta-row">
+          <span id="placeLabel">44.33, 23.80 · Craiova</span>
+          <span id="updatedAt"></span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div id="nowTemp" class="now-temp">--°</div>
+        <div id="nowDesc" class="now-desc">--</div>
+        <div id="nowMeta" class="now-meta">--</div>
+      </div>
+    </section>
+
+    <section class="card controls">
+      <div class="row">
+        <label>Lat <input id="latInput" type="number" step="0.01" value="44.33" /></label>
+        <label>Lon <input id="lonInput" type="number" step="0.01" value="23.80" /></label>
+        <button id="locateBtn" class="ghost" title="Use my location">📍</button>
+        <button id="refreshBtn" class="primary">Refresh</button>
+      </div>
+      <div class="row">
+        <label class="grow">Model
+          <select id="modelSelect">
+            <option value="best_match" selected>Best match (recommended)</option>
+            <option value="chmi_aladin_seamless">ALADIN / ALARO (CHMI 2km, Ventusky “Aladin”)</option>
+            <option value="icon_eu">ICON-EU (DWD 7km)</option>
+            <option value="ecmwf_ifs">ECMWF IFS (9km)</option>
+            <option value="gfs_seamless">GFS (NOAA 11km)</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Next 2 hours · minutecast</h2>
+        <span class="tag">15-min steps · Open-Meteo</span>
+      </div>
+      <div id="minuteBars" class="minute-bars"></div>
+      <div id="minuteList" class="minute-list"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Next ~60 min · radar</h2>
+        <span class="tag">EURAD replacement · RainViewer</span>
+      </div>
+      <p class="hint">Real radar observations. Blue→red = light→heavy.</p>
+      <div id="map"></div>
+      <div class="radar-controls">
+        <button id="playBtn" class="ghost">▶ Play</button>
+        <input id="radarSlider" type="range" min="0" max="0" value="0" step="1" />
+        <span id="radarTime" class="mono"></span>
+      </div>
+      <div class="link-row">
+        <a href="https://www.ventusky.com/radar-map#p=44.383;24.137;9&m=eurad&w=off" target="_blank" rel="noopener">Open Ventusky EURAD ↗</a>
+        <a href="https://www.ventusky.com/precipitation-map/1-hour#p=43.98;24.05;6&m=aladin&w=off" target="_blank" rel="noopener">Open Ventusky Aladin 1h ↗</a>
+        <a href="https://www.accuweather.com/ro/ro/craiova/287856/minute-weather-forecast/287856" target="_blank" rel="noopener">Open AccuWeather ↗</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Next 8 hours · rain & clouds</h2>
+        <span class="tag" id="modelTag">Best match</span>
+      </div>
+      <div id="hourly" class="hourly"></div>
+    </section>
+
+  </main>
+
+  <footer>RainCheck · Craiova · Open-Meteo + RainViewer</footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+</body>
+</html>

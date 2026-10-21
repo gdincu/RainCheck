@@ -1,0 +1,13 @@
+{
+  "name": "RainCheck — Will it rain?",
+  "short_name": "RainCheck",
+  "description": "Will it rain in Craiova? 2h minutecast, 60-min radar, 8h rain & clouds.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
